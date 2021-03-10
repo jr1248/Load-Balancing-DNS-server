@@ -15,12 +15,12 @@ def server():
 
     #read in args from cmd line
     lsPort = int(sys.argv[1])
-    ts1HostName = sys.argv[2]
-    ts1Port = sys.argv[3]
-    ts2HostName = sys.argv[4]
-    ts2Port = sys.argv[5]
+    #ts1HostName = sys.argv[2]
+    #ts1Port = sys.argv[3]
+    #ts2HostName = sys.argv[4]
+    #ts2Port = sys.argv[5]
 
-    server_binding = ('', rsPort)
+    server_binding = ('', lsPort)
     ss.bind(server_binding)
     ss.listen(1)
     host = socket.gethostname()
@@ -30,5 +30,13 @@ def server():
     csockid, addr = ss.accept()
     print ("[S]: Got a connection request from a client at {}".format(addr))
 
+    data_from_client = csockid.recv(1024)
+    query = data_from_client.decode('utf-8')
+
+    print(query)
+
+    outward = "Hello"
+
+    csockid.send(outward.encode('utf-8'))
 
 server()

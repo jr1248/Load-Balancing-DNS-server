@@ -22,9 +22,39 @@ def client():
     cs.connect(server_binding)
 
     #Read in HNS file to send over
-    data = open('PROJ2-HNS.txt')
-    info = data.read()
-    infoL = info.lower()
+    word_array = []
+    with open('PROJ2-HNS.txt') as data:
+        for line in data:
+            line.lower()
+            word_array.append(line.split())
+
+    i = 0
+    while i < len(word_array):
+        cs.sendall(word_array[i][0].encode('utf-8'))
+        data_from_server = cs.recv(1024)
+        response = data_from_server.decode('utf-8')
+        if(response != None):
+            i+=1
+            print(response)
+            print(i)
+        else:
+            cs.sendall(word_array[i][0].encode('utf-8'))
+            print('sent')
+
+       
+
+    #while i < len(word_array)
+        #send 
+        #if(recv != null)
+            #i++
+
+
+
+
+
+
+
+
     
 
 
