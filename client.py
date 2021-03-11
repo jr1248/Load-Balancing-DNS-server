@@ -28,29 +28,12 @@ def client():
             line.lower()
             word_array.append(line.split())
 
-    i = 0
-    while i < len(word_array):
-        cs.sendall(word_array[i][0].encode('utf-8'))
-        data_from_server = cs.recv(1024)
-        response = data_from_server.decode('utf-8')
-        if(response != None):
-            i+=1
-            print(response)
-            print(i)
-        else:
-            cs.sendall(word_array[i][0].encode('utf-8'))
-            print('sent')
-
-       
-
-    #while i < len(word_array)
-        #send 
-        #if(recv != null)
-            #i++
+    for i in range(len(word_array)): 
+        cs.send(word_array[i][0].encode('utf-8')) #no it says unexpected token len
+        print(word_array[i])
 
 
-
-
+    cs.recv(1024).decode('utf-8')
 
 
 

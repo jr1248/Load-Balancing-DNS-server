@@ -30,13 +30,19 @@ def server():
     csockid, addr = ss.accept()
     print ("[S]: Got a connection request from a client at {}".format(addr))
 
-    data_from_client = csockid.recv(1024)
-    query = data_from_client.decode('utf-8')
+    #sample string to send to client
+    outward = "hello"
 
-    print(query)
-
-    outward = "Hello"
-
-    csockid.send(outward.encode('utf-8'))
-
+    while True:
+        try:
+            data_from_client = csockid.recv(1024)
+            query_value = data_from_client.decode('utf-8')
+            print(query_value)
+            csockid.send(outward.encode('utf-8'))
+        except:
+            break
+'''
+#I dont think we close here?, maybe all of this lives in another while loop that says, 
+as long client has stuff to send, we keep the socket open?? 
+'''
 server()
