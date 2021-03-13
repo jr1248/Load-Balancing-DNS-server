@@ -33,7 +33,7 @@ def client():
         print(word_array[i])
 
 
-    cs.recv(1024).decode('utf-8')
+   
 
 
 
