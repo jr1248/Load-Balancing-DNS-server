@@ -31,8 +31,15 @@ def server():
     print ("[S]: Got a connection request from a client at {}".format(addr))
 
    #create new clients to send to servers
-    ts1 = create_client()
-    ts2 = create_client()
+    ts1 = threading.Thread(name='create_client', target=create_client)
+    ts1.start()
+
+    time.sleep(5)
+    ts2 = threading.Thread(name='create_client', target=create_client)
+    ts2.start()
+
+    time.sleep(5)
+
     connection(ts1,ts1HostName,ts1Port)
     connection(ts2,ts2HostName,ts2Port)
     ts1.settimeout(5)
@@ -55,11 +62,11 @@ def server():
 
             try:
                 ts1.send(store_data[i].encode('utf-8'))
+                #sleep(5)
                 ts1_recv = ts1.recv(1024).decode('utf-8')
                 #sleep(5)
-                print("timed out")
+                #print("timed out")
                 ts2.send(store_data[i].encode('utf-8'))
-                print(ts1_recv)
                 ts2_recv = ts2.recv(1024).decode('utf-8')
                 print(ts2_recv)
             except: 
@@ -88,20 +95,6 @@ def connection(clientName,hostName, port):
     server_binding = (hostName, port)
     clientName.connect(server_binding)
 
-def recieve_from_ts1_ts2(s1,s2):
-    while True:
-        try:
-            data_from_ts1 = s1.recv(1024)
-            value1 = data_from_ts1.decode('utf-8')
-            print(value1)
-        except socket.timeout:          
-            try:
-                data_from_ts2 = s2.recv(1024)
-                value2 = data_from_ts2.decode('utf-8')
-                print(value2)
-            except:
-                print('here1')
-                break
 
 
 server()
