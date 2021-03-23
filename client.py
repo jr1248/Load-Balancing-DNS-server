@@ -22,15 +22,12 @@ def client():
     cs.connect(server_binding)
 
     #Read in HNS file to send over
-    word_array = []
-    with open('PROJ2-HNS.txt') as data:
-        for line in data:
-            line.lower()
-            word_array.append(line.split())
-
-    for i in range(len(word_array)): 
-        cs.send(word_array[i][0].encode('utf-8')) #no it says unexpected token len
-        print(word_array[i])
+    #Read HNS file and send data over
+    data = open('PROJ2-HNS.txt')
+    info = data.read()
+    infoL = info.lower()
+    cs.sendall(infoL.encode('utf-8'))
+   
 
 
    

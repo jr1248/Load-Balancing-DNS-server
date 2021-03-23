@@ -23,15 +23,19 @@ def server():
     csockid, addr = ss.accept()
     print ("[S]: Got a connection request from a client at {}".format(addr))
 
+    store_data = []
     while True:
-        try:
-            data_from_client = csockid.recv(1024)
-            query_value = data_from_client.decode('utf-8')
-            print(query_value)
-            #send_to_client = table_lookup(query_value)
-            #cssockid.send(send_to_client.encode('utf-8'))
-        except:
+        data_from_client = csockid.recv(1024)
+        query = data_from_client.decode('utf-8')
+        print("This is what I recieved",query)
+        send_ts2 = table_lookup(query)
+        csockid.send(send_ts2.encode('utf-8'))
+        if not query:
             break
+        
+
+    ss.close();
+
 
 
 
@@ -39,16 +43,22 @@ def table_lookup(query):
 
     content_array = []
 
-    data = open('PROJ2-DNSTS2')
+    data = open('PROJ2-DNSTS2.txt')
     
     for line in data:
         temp = line.split(' ')
         content_array.append(temp)
 
     #search and send to client
-    for i in range (0, len(content_array)):
-        if query == content_array[j][0]:
+    word = ""
+    for j in range (0, len(content_array)):
+        print("This is what i'm comparing to:" , content_array[j][0])
+        print("This is my query:", query)
+        if query in content_array[j][0]:
             word = content_array[j][0] + " " + content_array[j][1] + " " + content_array[j][2]
+            break;
+       
+    print("This is the word we reply with:",word)
 
     return word
 

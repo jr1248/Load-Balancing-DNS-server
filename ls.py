@@ -31,7 +31,6 @@ def server():
     print ("[S]: Got a connection request from a client at {}".format(addr))
 
    #create new clients to send to servers
-
     ts1 = create_client()
     ts2 = create_client()
     connection(ts1,ts1HostName,ts1Port)
@@ -39,18 +38,41 @@ def server():
     ts1.settimeout(5)
     ts2.settimeout(5)
 
+    #send data to servers
+    store_data = []
     while True:
-        try:
-            data_from_client = csockid.recv(1024)
-            query_value = data_from_client.decode('utf-8')
-            ts1.send(query_value.encode('utf-8'))
-            ts2.send(query_value.encode('utf-8')) 
-        except:
+        data_from_client = csockid.recv(1024)
+        query = data_from_client.decode('utf-8')
+        print(query)
+        if not query:
             break
+        #send to ts servers
+        store_data = query.split('\n')
+        
+
+        for i in range(0, len(store_data)-1):
+            print("sending: ", store_data[i])
+
+            try:
+                ts1.send(store_data[i].encode('utf-8'))
+                ts1_recv = ts1.recv(1024).decode('utf-8')
+                #sleep(5)
+                print("timed out")
+                ts2.send(store_data[i].encode('utf-8'))
+                print(ts1_recv)
+                ts2_recv = ts2.recv(1024).decode('utf-8')
+                print(ts2_recv)
+            except: 
+                continue
+            
+
+    ss.close()
+    ts1.close()
+    ts2.close()
 
 
 
-
+#method creates client
 def create_client():
     try:
         cs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,12 +83,25 @@ def create_client():
 
     return cs;
     
- 
+#connection connects via inputs hostName, port number 
 def connection(clientName,hostName, port):
     server_binding = (hostName, port)
     clientName.connect(server_binding)
 
-
+def recieve_from_ts1_ts2(s1,s2):
+    while True:
+        try:
+            data_from_ts1 = s1.recv(1024)
+            value1 = data_from_ts1.decode('utf-8')
+            print(value1)
+        except socket.timeout:          
+            try:
+                data_from_ts2 = s2.recv(1024)
+                value2 = data_from_ts2.decode('utf-8')
+                print(value2)
+            except:
+                print('here1')
+                break
 
 
 server()
